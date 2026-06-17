@@ -15,15 +15,7 @@ class CreateProducts < ActiveRecord::Migration[8.1]
       # 3. 大文本商品简述
       t.text :description
 
-      # 4. 图片核心资产
-      t.string :main_image_url
-      
-      # 5. 🔥 PG 物理外挂：原生字符串数组 (String Array)
-      # 既然用了 PG，咱们彻底抛弃恶心的 json 字符串序列化！
-      # 直接用 PG 硬件支持的 array: true，底层就是真正的物理数组。
-      t.string :image_urls, array: true, default: []
-
-      # 6. 系统自动时间戳
+      # 4. 系统自动时间戳
       t.timestamps
     end
     add_index :products, :sku, unique: true

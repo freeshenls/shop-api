@@ -1,24 +1,107 @@
 ---
 engine_version: 0.5.0
-file_version: 2026-06-17 01:27:48.917436000 +08:00
+file_version: 2026-06-17 10:38:45.313157000 Z
 resources:
+- name: category
+  preferences:
+    display_name: 类别列表
+    columns:
+    - display_name: 上层
+      reference:
+        name: parent
+        display_name: Parent
+        model_name: category
+        reference_type: belongs_to
+        foreign_key: parent_id
+        primary_key: id
+        options: {}
+        polymorphic:
+        virtual: false
+      name: parent_id
+    - display_name: 名称
+      name: name
+    - display_name: 更新时间
+      name: updated_at
+    - display_name: 创建时间
+      name: created_at
+    scopes:
+    - display_name: 第一层
+      name: level_1
+    - display_name: 第二层
+      name: level_2
+    - display_name: 第三层
+      name: level_3
+    tabs:
+    - visible: false
+      name: audits
+    - visible: false
+      name: notes
+    searchable_columns:
+    - name
+    - slug
+  updated_at: 2026-06-17 10:38:45.313157000 +00:00
 - name: product
   preferences:
     columns:
     - column_type: richtext
+      display_name: 描述
       name: description
-  updated_at: 2026-06-17 01:27:48.917436000 +00:00
+    - display_name: 主图
+      reference:
+        name: image_attachment
+        display_name: Image attachment
+        model_name: active_storage/attachment
+        reference_type: has_one
+        foreign_key: record_id
+        primary_key: id
+        options: {}
+        polymorphic:
+        virtual: false
+      name: image_attachment
+    - display_name: 标题
+      name: title
+    - display_name: 价格
+      name: price
+    - display_name: 更新时间
+      name: updated_at
+    - display_name: 创建时间
+      name: created_at
+    - display_name: 类别
+      reference:
+        name: category
+        display_name: Category
+        model_name: category
+        reference_type: belongs_to
+        foreign_key: category_id
+        primary_key: id
+        options: {}
+        polymorphic:
+        virtual: false
+      name: category_id
+    associations:
+    - display_name: 多图
+      name: images_attachments
+    display_name: 商品列表
+    tabs:
+    - visible: false
+      name: notes
+    - visible: false
+      name: audits
+    searchable_columns:
+    - title
+    - sku
+  updated_at: 2026-06-17 10:38:23.295096000 +00:00
 configs:
 - key: header.links
   value:
-  - name: Reports
+  - name: 报告
     link_type: reports
-  - name: Forms
+  - name: 表单
     link_type: forms
-  updated_at: 2026-06-16 15:17:04.496619000 +00:00
-- key: homepage.layout
+  updated_at: 2026-06-17 09:35:55.372068000 +00:00
+- key: resources.product.scopes.order
   value: []
-  updated_at: 2026-06-16 15:19:02.968876000 +00:00
+  updated_at: 2026-06-17 10:38:02.711609000 +00:00
 queries: []
 dashboards: []
 forms: []
@@ -29,4 +112,4 @@ api_configs:
   url: "/"
   preferences: {}
   description:
-  updated_at: 2026-06-16 15:03:08.447779000 +00:00
+  updated_at: 2026-06-17 09:23:33.264842000 +00:00
