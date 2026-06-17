@@ -60,3 +60,7 @@ gem "foreman"
 gem "motor-admin", "~> 0.5.0"
 
 gem "devise", "~> 5.0"
+
+gem "heroicons", "~> 2.2"
+
+gem "view_component", "~> 4.12"

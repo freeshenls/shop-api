@@ -1,0 +1,55 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "motor", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "devise", "data-turbo-track": "reload" %>
+  <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+<% end %>
+
+<div class="devise-card">
+  <div class="devise-title">
+    <span class="devise-title-dot"></span>
+    <span>用户注册</span>
+  </div>
+  <div class="devise-subtitle">创建账号以管理商城资源</div>
+
+  <%= render "devise/shared/error_messages", resource: resource %>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <div class="form-item">
+      <%= f.label :email, "账号 (Email)", class: "form-label" %>
+      <div class="input-group">
+        <i class="ion ion-md-mail input-icon"></i>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "input-field input-field-with-icon", placeholder: "请输入电子邮箱" %>
+      </div>
+    </div>
+
+    <div class="form-item">
+      <%= f.label :password, "密码 (Password)", class: "form-label" %>
+      <% if @minimum_password_length %>
+        <span style="font-size: 11px; color: #808695; display: block; margin-top: -4px; margin-bottom: 8px;">(最少 <%= @minimum_password_length %> 个字符)</span>
+      <% end %>
+      <div class="input-group">
+        <i class="ion ion-md-lock input-icon"></i>
+        <%= f.password_field :password, autocomplete: "new-password", class: "input-field input-field-with-icon", placeholder: "请输入密码" %>
+      </div>
+    </div>
+
+    <div class="form-item">
+      <%= f.label :password_confirmation, "确认密码 (Confirm Password)", class: "form-label" %>
+      <div class="input-group">
+        <i class="ion ion-md-lock input-icon"></i>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "input-field input-field-with-icon", placeholder: "请再次输入密码" %>
+      </div>
+    </div>
+
+    <div class="form-item">
+      <%= f.button type: :submit, class: "btn-submit" do %>
+        <span>注 册</span>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="links-container">
+    <%= render "devise/shared/links" %>
+  </div>
+</div>
+

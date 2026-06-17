@@ -1,0 +1,36 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "motor", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "devise", "data-turbo-track": "reload" %>
+  <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+<% end %>
+
+<div class="devise-card">
+  <div class="devise-title">
+    <span class="devise-title-dot"></span>
+    <span>重发确认邮件</span>
+  </div>
+  <div class="devise-subtitle">输入您的邮箱以重新接收确认说明</div>
+
+  <%= render "devise/shared/error_messages", resource: resource %>
+
+  <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+    <div class="form-item">
+      <%= f.label :email, "电子邮箱 (Email)", class: "form-label" %>
+      <div class="input-group">
+        <i class="ion ion-md-mail input-icon"></i>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email), class: "input-field input-field-with-icon", placeholder: "请输入电子邮箱" %>
+      </div>
+    </div>
+
+    <div class="form-item">
+      <%= f.button type: :submit, class: "btn-submit" do %>
+        <span>重新发送确认邮件</span>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="links-container">
+    <%= render "devise/shared/links" %>
+  </div>
+</div>
+

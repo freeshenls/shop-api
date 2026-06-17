@@ -1,0 +1,40 @@
+<div class="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat py-12 px-4" style="background-image: url('<%= image_path("bg.jpg") %>');">
+  <div class="max-w-[260px] w-full p-5 bg-white rounded-2xl shadow-md">
+    
+    <div class="text-center mb-4">
+      <h3 class="text-lg font-bold text-[#0066b3]">修改密码</h3>
+      <div class="w-8 h-1 bg-[#3b82f6] mx-auto mt-2 rounded"></div>
+    </div>
+
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: "space-y-3" }) do |f| %>
+      <%= f.hidden_field :reset_password_token %>
+
+      <div class="relative">
+        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+          <%= heroicon "lock-closed", variant: :outline, options: { class: "h-4 w-4" } %>
+        </span>
+        <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: "w-full pl-8 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none text-gray-900 placeholder-gray-400", placeholder: "新密码" %>
+      </div>
+      <% if @minimum_password_length %>
+        <span class="text-[10px] text-gray-400 block mt-1">(最少 <%= @minimum_password_length %> 个字符)</span>
+      <% end %>
+
+      <div class="relative">
+        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+          <%= heroicon "lock-closed", variant: :outline, options: { class: "h-4 w-4" } %>
+        </span>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full pl-8 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none text-gray-900 placeholder-gray-400", placeholder: "确认新密码" %>
+      </div>
+
+      <%= f.submit "修改密码", class: "w-full py-2 px-3 text-sm font-medium rounded-full text-white bg-gradient-to-r from-blue-500 to-blue-400 hover:from-blue-600 hover:to-blue-500 cursor-pointer transition duration-150 border-none" %>
+    <% end %>
+
+    <div class="text-center text-[10px] text-gray-700 mt-3">
+      已有账号？ <a class="text-blue-600 hover:text-blue-500 font-medium no-underline hover:underline" href="/users/sign_in">返回登录</a>
+    </div>
+  </div>
+</div>
+
+

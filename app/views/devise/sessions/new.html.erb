@@ -1,0 +1,89 @@
+<div class="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat py-12 px-4" style="background-image: url('<%= image_path("bg.jpg") %>');">
+  <div class="max-w-[260px] w-full p-5 bg-white rounded-2xl shadow-md">
+    
+    <div class="text-center mb-4">
+      <h3 class="text-lg font-bold text-[#0066b3]">登录</h3>
+      <div class="w-8 h-1 bg-[#3b82f6] mx-auto mt-2 rounded"></div>
+    </div>
+
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-3", id: "login-form" }) do |f| %>
+      <% if flash[:alert] && flash[:alert] != I18n.t("devise.failure.unauthenticated") %>
+        <div class="text-red-500 text-[10px] text-center mb-2" style="font-size: 11px;">
+          <%= flash[:alert] %>
+        </div>
+      <% end %>
+
+      <div class="relative">
+        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+          <%= heroicon "envelope", variant: :outline, options: { class: "h-4 w-4" } %>
+        </span>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full pl-8 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none text-gray-900 placeholder-gray-400", placeholder: "邮箱", id: "user_email" %>
+      </div>
+
+      <div class="relative">
+        <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+          <%= heroicon "lock-closed", variant: :outline, options: { class: "h-4 w-4" } %>
+        </span>
+        <%= f.password_field :password, autocomplete: "current-password", class: "w-full pl-8 pr-10 py-1.5 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none text-gray-900 placeholder-gray-400", placeholder: "密码", id: "user_password" %>
+        <button type="button" id="toggle-password" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer hover:text-blue-500 transition-colors border-none bg-transparent p-0 flex items-center focus:outline-none">
+          <span id="eye-open-icon">
+            <%= heroicon "eye", variant: :outline, options: { class: "h-4 w-4" } %>
+          </span>
+          <span id="eye-closed-icon" class="hidden">
+            <%= heroicon "eye-slash", variant: :outline, options: { class: "h-4 w-4" } %>
+          </span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between text-[10px] mt-1 text-gray-700">
+        <label class="flex items-center cursor-pointer">
+          <%= f.check_box :remember_me, class: "h-3.5 w-3.5 text-blue-600 border-gray-300 rounded focus:ring-0", id: "user_remember_me" %>
+          <span class="ml-1.5">记住我</span>
+        </label>
+      </div>
+
+      <%= f.submit "登录", class: "w-full py-2 px-3 text-sm font-medium rounded-full text-white bg-gradient-to-r from-blue-500 to-blue-400 hover:from-blue-600 hover:to-blue-500 cursor-pointer transition duration-150 border-none", data: { disable_with: "登录" } %>
+    <% end %>
+
+    <div class="text-center text-[10px] text-gray-700 mt-3">
+      Motor Admin
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const initToggle = function() {
+      const toggleBtn = document.getElementById('toggle-password');
+      const passwordInput = document.getElementById('user_password');
+      const eyeOpen = document.getElementById('eye-open-icon');
+      const eyeClosed = document.getElementById('eye-closed-icon');
+      
+      if (toggleBtn && passwordInput && eyeOpen && eyeClosed) {
+        toggleBtn.replaceWith(toggleBtn.cloneNode(true));
+        const newToggleBtn = document.getElementById('toggle-password');
+        const newEyeOpen = document.getElementById('eye-open-icon');
+        const newEyeClosed = document.getElementById('eye-closed-icon');
+        
+        newToggleBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            newEyeOpen.classList.add('hidden');
+            newEyeClosed.classList.remove('hidden');
+          } else {
+            passwordInput.type = 'password';
+            newEyeOpen.classList.remove('hidden');
+            newEyeClosed.classList.add('hidden');
+          }
+        });
+      }
+    };
+    document.addEventListener('turbo:load', initToggle);
+    document.addEventListener('DOMContentLoaded', initToggle);
+    if (document.readyState !== 'loading') initToggle();
+  })();
+</script>
+
+
+

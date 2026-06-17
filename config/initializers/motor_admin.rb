@@ -26,6 +26,37 @@ Rails.application.config.to_prepare do
         CSS
       end
 
+      # 3. 将左上角 Home 按钮的 Bolt 图标替换为 Syphor 品牌 Logo
+      logo_path = ActionController::Base.helpers.asset_path('logo.png')
+      css_rules << <<~CSS
+        a.ivu-btn[href*="/motor_admin"] svg {
+          display: none !important;
+        }
+        a.ivu-btn[href*="/motor_admin"] span div.d-flex {
+          width: 90px !important;
+          height: 24px !important;
+          background-image: url('#{logo_path}') !important;
+          background-size: contain !important;
+          background-repeat: no-repeat !important;
+          background-position: center !important;
+        }
+        a.ivu-btn[href*="/motor_admin"] {
+          width: auto !important;
+          height: 40px !important;
+          padding: 0 10px !important;
+          background-color: #ffffff !important;
+          border-color: #e5e7eb !important;
+          box-shadow: none !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+        a.ivu-btn[href*="/motor_admin"]:hover {
+          background-color: #f3f4f6 !important;
+          border-color: #d1d5db !important;
+        }
+      CSS
+
       next if css_rules.empty?
 
       response.body = response.body.sub('</head>', <<~HTML.html_safe) rescue nil
