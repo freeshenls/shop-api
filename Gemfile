@@ -58,3 +58,5 @@ gem "web-console"
 gem "foreman"
 
 gem "motor-admin", "~> 0.5.0"
+
+gem "devise", "~> 5.0"

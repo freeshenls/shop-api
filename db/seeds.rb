@@ -6,6 +6,7 @@
 puts "Clearing existing data..."
 Product.destroy_all
 Category.destroy_all
+User.destroy_all
 
 # 2. Define the categories hierarchy tree based on the extracted HTML
 categories_tree = {
@@ -117,3 +118,18 @@ Product.find_or_create_by!(sku: "VAC-003") do |p|
 end
 
 puts "Product seeding finished! Total Products: #{Product.count}"
+
+# 5. Add some default users for testing Devise authentication & authorization
+puts "Seeding Devise users..."
+User.find_or_create_by!(email: "admin@example.com") do |u|
+  u.password = "password"
+  u.password_confirmation = "password"
+  u.role = "admin"
+end
+
+User.find_or_create_by!(email: "operator@example.com") do |u|
+  u.password = "password"
+  u.password_confirmation = "password"
+  u.role = "operator"
+end
+puts "Devise user seeding finished! Total Users: #{User.count}"

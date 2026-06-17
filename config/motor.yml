@@ -1,6 +1,6 @@
 ---
 engine_version: 0.5.0
-file_version: 2026-06-17 10:38:45.313157000 Z
+file_version: 2026-06-17 11:07:36.604127000 Z
 resources:
 - name: category
   preferences:
@@ -90,7 +90,19 @@ resources:
     searchable_columns:
     - title
     - sku
-  updated_at: 2026-06-17 10:38:23.295096000 +00:00
+    scopes:
+    - display_name: Kitchen Appliances
+      name: kitchen_appliances
+    - display_name: Home Appliances
+      name: home_appliances
+    - display_name: Beauty & Personal Care
+      name: beauty_personal_care
+  updated_at: 2026-06-17 10:52:25.495085000 +00:00
+- name: user
+  preferences:
+    display_name: 用户
+    visible: false
+  updated_at: 2026-06-17 11:07:36.604127000 +00:00
 configs:
 - key: header.links
   value:
@@ -99,9 +111,18 @@ configs:
   - name: 表单
     link_type: forms
   updated_at: 2026-06-17 09:35:55.372068000 +00:00
+- key: resources.category.scopes.order
+  value:
+  - level_1
+  - level_2
+  - level_3
+  updated_at: 2026-06-17 09:57:07.977053000 +00:00
 - key: resources.product.scopes.order
-  value: []
-  updated_at: 2026-06-17 10:38:02.711609000 +00:00
+  value:
+  - kitchen_appliances
+  - home_appliances
+  - beauty_personal_care
+  updated_at: 2026-06-17 10:52:25.508919000 +00:00
 queries: []
 dashboards: []
 forms: []
