@@ -1,0 +1,32 @@
+---
+engine_version: 0.5.0
+file_version: 2026-06-17 01:27:48.917436000 +08:00
+resources:
+- name: product
+  preferences:
+    columns:
+    - column_type: richtext
+      name: description
+  updated_at: 2026-06-17 01:27:48.917436000 +00:00
+configs:
+- key: header.links
+  value:
+  - name: Reports
+    link_type: reports
+  - name: Forms
+    link_type: forms
+  updated_at: 2026-06-16 15:17:04.496619000 +00:00
+- key: homepage.layout
+  value: []
+  updated_at: 2026-06-16 15:19:02.968876000 +00:00
+queries: []
+dashboards: []
+forms: []
+alerts: []
+api_configs:
+- id: 1
+  name: origin
+  url: "/"
+  preferences: {}
+  description:
+  updated_at: 2026-06-16 15:03:08.447779000 +00:00
