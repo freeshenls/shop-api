@@ -64,3 +64,7 @@ gem "devise", "~> 5.0"
 gem "heroicons", "~> 2.2"
 
 gem "view_component", "~> 4.12"
+
+gem "seed_dump", "~> 3.4"
+
+gem "aws-sdk-s3", "~> 1.226"

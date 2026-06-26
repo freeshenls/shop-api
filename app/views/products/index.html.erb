@@ -1,0 +1,215 @@
+<%
+  phone_number = "+86 17369698809"
+  email_address = "info@gosyphor.com"
+
+  # Dynamic Catalog SEO Meta Tags
+  if params[:category].present?
+    content_for :title, "Custom #{params[:category]} & Branded Promotional Products | Syphor"
+    content_for :description, "Explore our high-quality collection of custom #{params[:category].downcase} and branded merchandise. Add your corporate logo with premium imprinting at Syphor."
+  elsif params[:q].present?
+    content_for :title, "Search Results for '#{params[:q]}' | Custom Branded Swag | Syphor"
+    content_for :description, "Browse all search results for '#{params[:q]}' at Syphor. Discover premium custom-printed promotional gifts, apparel, and corporate giveaways."
+  else
+    content_for :title, "Corporate Gifts & Custom Branded Promotional Products Catalog | Syphor"
+    content_for :description, "Browse our extensive catalog of premium custom promotional products, branded corporate gifts, personalized drinkware, custom apparel, and school spirit swag."
+  end
+%>
+
+
+<%= render HeaderComponent.new(query: params[:q]) %>
+
+<!-- Main Products Content Grid -->
+<section class="py-10">
+  <div class="<%= container_custom %> grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-[30px]">
+    <!-- Left Sidebar Category Filters -->
+
+    <aside class="hidden lg:block <%= panel_card %> self-start">
+      <%# ── Sidebar Header ── %>
+      <div class="flex items-center gap-2 pb-3 mb-1 border-b border-[#e2e8f0]">
+        <%= heroicon "squares-2x2", variant: :mini, options: { class: "text-[#1F4E72]" } %>
+        <span class="<%= heading_sub %> text-[16px]">Categories</span>
+      </div>
+
+      <ul class="list-none p-0 m-0 flex flex-col mt-2 gap-0.5">
+        <% @categories_tree.each_with_index do |level_1, idx| %>
+          <% is_l1_active = params[:category].to_s.downcase == level_1.name.downcase %>
+          <% has_l1_children = level_1.children.any? %>
+          <% l1_expanded = true %>
+
+          <li <% if has_l1_children %>data-controller="category-tree"<% end %>>
+            <%# ── Level 1 Row ── %>
+            <div class="flex items-center gap-1">
+              <% if has_l1_children %>
+                <button type="button"
+                        data-action="click->category-tree#toggle"
+                        class="flex-shrink-0 flex items-center justify-center w-5 h-5 rounded text-slate-400
+                               hover:text-[#1F4E72] bg-transparent border-none cursor-pointer outline-none
+                               transition-colors duration-150">
+                  <%= heroicon "chevron-right", variant: :mini,
+                  options: { class: "transition-transform duration-250 #{ l1_expanded ? 'rotate-90' : '' }",
+                                 "data-category-tree-target" => "chevron" } %>
+                </button>
+              <% else %>
+                <div class="w-5 flex-shrink-0"></div>
+              <% end %>
+
+              <a href="<%= category_filter_url(level_1.name) %>"
+                 class="flex-1 py-1.5 px-2 text-[14px] font-bold rounded-[5px] no-underline transition-all duration-200 <%= is_l1_active ? 'bg-[#1F4E72] text-white shadow-sm' : 'text-[#0f172a] hover:bg-[#1F4E72]/[0.07] hover:text-[#1F4E72]' %>">
+                <%= level_1.name %>
+              </a>
+            </div>
+
+            <%# ── Level 2 Submenu (animated) ── %>
+            <% if has_l1_children %>
+              <ul data-category-tree-target="submenu"
+                  class="list-none p-0 m-0 ml-2.5 pl-3 flex flex-col gap-0.5 py-1 mt-0.5
+                         transition-[max-height] duration-300 ease-in-out
+                         <%= l1_expanded ? '' : 'cat-collapsed' %>">
+
+                <%# sort_by in Ruby — data already loaded via includes, avoids extra SQL %>
+                <% level_1.children.each do |level_2| %>
+                  <% is_l2_active = params[:category].to_s.downcase == level_2.name.downcase %>
+                  <% has_l2_children = level_2.children.any? %>
+                  <% is_l2_path = active_path?(level_2, @active_category) %>
+
+                  <%# group/l2 enables hover popover trigger %>
+                  <li class="relative group/l2">
+                    <a href="<%= category_filter_url(level_2.name) %>"
+                       class="flex items-center justify-between py-1 px-2 text-[13px] rounded-[4px] no-underline transition-all duration-200 <%= (is_l2_active || is_l2_path) ? 'bg-[#1F4E72]/10 text-[#1F4E72] font-semibold' : 'text-slate-600 font-medium hover:bg-[#1F4E72]/[0.06] hover:text-[#1F4E72]' %>">
+                      <span><%= level_2.name %></span>
+                      <% if has_l2_children %>
+                        <%= heroicon "chevron-right", variant: :mini,
+                            options: { class: "flex-shrink-0 text-slate-300 group-hover/l2:text-[#1F4E72] transition-colors duration-150" } %>
+                      <% end %>
+                    </a>
+
+                    <%# ── Level 3 Popover (hover) ── %>
+                    <% if has_l2_children %>
+                      <div class="absolute left-full top-0 pl-2 z-[200]
+                                  opacity-0 invisible pointer-events-none
+                                  group-hover/l2:opacity-100 group-hover/l2:visible group-hover/l2:pointer-events-auto
+                                  transition-opacity duration-150 ease-out">
+                        <div class="relative">
+                          <%# Arrow %>
+                          <div class="absolute -left-[5px] top-3.5 w-2.5 h-2.5 bg-white
+                                      border-l border-b border-[#e2e8f0] rotate-45 z-10"></div>
+                          <div class="bg-white border border-[#e2e8f0] rounded-[8px] shadow-xl
+                                      py-2 px-1.5 min-w-[175px] max-w-[230px]">
+                            <% level_2.children.each do |level_3| %>
+                              <% is_l3_active = params[:category].to_s.downcase == level_3.name.downcase %>
+                              <a href="<%= category_filter_url(level_3.name) %>"
+                                 class="block px-2 py-1.5 text-[12.5px] rounded-[4px] no-underline transition-all duration-150 <%= is_l3_active ? 'bg-[#1F4E72] text-white font-semibold' : 'text-slate-600 hover:bg-[#1F4E72]/[0.08] hover:text-[#1F4E72]' %>">
+                                <%= level_3.name %>
+                              </a>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                  </li>
+                <% end %>
+              </ul>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </aside>
+
+    <!-- Right Products List Grid -->
+    <div>
+      <!-- Page Header & Search Feedback -->
+      <div class="mb-[30px] flex justify-between items-end flex-wrap gap-4 border-b border-[#e2e8f0] pb-4">
+        <div>
+          <h1 class="<%= heading_title %> text-[28px]">
+            <%= @category_filter.present? ? @category_filter : "Product Search" %>
+          </h1>
+          <% if @query.present? %>
+            <p class="text-sm text-[#64748b] mt-1">
+              Showing results for "<strong class="text-[#0f172a]"><%= @query %></strong>"
+            </p>
+          <% end %>
+        </div>
+        <div class="flex items-center gap-4 text-sm text-[#64748b] font-medium flex-wrap">
+          <div>
+            Found <strong class="text-[#0f172a] font-['Outfit']"><%= @total_products %></strong> products
+          </div>
+          <div class="flex items-center gap-2">
+            <span>Show:</span>
+
+            <select class="py-1.5 px-3 border border-[#e2e8f0] rounded-[6px] text-[13px] font-semibold text-[#0f172a] bg-white outline-none cursor-pointer transition-all duration-300 <%= input_focus %>" onchange="window.location.href=this.value;">
+              <option value="<%= page_size_url(15) %>" <%= 'selected' if @per_page == 15 %>>15 / Page</option>
+              <option value="<%= page_size_url(30) %>" <%= 'selected' if @per_page == 30 %>>30 / Page</option>
+              <option value="<%= page_size_url(60) %>" <%= 'selected' if @per_page == 60 %>>60 / Page</option>
+              <option value="<%= page_size_url(120) %>" <%= 'selected' if @per_page == 120 %>>120 / Page</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <% if @product_cards.any? %>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-[30px]">
+          <% @product_cards.each do |product| %>
+            <%= render ProductCardComponent.new(product: product) %>
+          <% end %>
+        </div>
+      <% else %>
+        <!-- No Products Found State -->
+        <div class="text-center py-20 px-5 bg-white border border-[#e2e8f0] rounded-[6px] shadow-sm max-w-[600px] my-10 mx-auto">
+          <%= heroicon "archive-box-x-mark", options: { class: "text-[72px] text-slate-300 mb-4" } %>
+          <h2 class="<%= heading_title %> text-[22px] mb-2">No Products Found</h2>
+          <p class="text-sm text-[#64748b] max-w-[320px] my-0 mx-auto mb-6 leading-relaxed">
+            We couldn't find any products matching your filters. Try selecting another category or resetting your query.
+          </p>
+          <a href="/products" class="inline-flex items-center justify-center bg-[#1F4E72] hover:bg-[#163A55] text-white py-2 px-5 rounded-[4px] text-xs font-bold font-['Outfit'] shadow-sm transition-all duration-200 hover:-translate-y-0.5 no-underline border-none">Reset Filters</a>
+        </div>
+      <% end %>
+
+      <!-- Pagination Controls (Always displayed by default) -->
+      <div class="flex justify-center items-center gap-2 mt-10 pt-6 border-t border-[#e2e8f0]">
+        <!-- Previous Page Link -->
+        <% if @current_page > 1 %>
+          <a href="/products?page=<%= @current_page - 1 %>&per_page=<%= @per_page %><%= "&category=#{u(params[:category])}" if params[:category].present? %><%= "&q=#{u(params[:q])}" if params[:q].present? %>" class="flex items-center justify-center w-10 h-10 border border-[#e2e8f0] rounded-[6px] text-[#0f172a] bg-white transition-all duration-300 hover:bg-[#074277]/[0.08] hover:text-[#074277] hover:border-[#074277]">
+            <%= heroicon "chevron-left", options: { class: "size-5" } %>
+          </a>
+        <% else %>
+          <div class="flex items-center justify-center w-10 h-10 border border-[#e2e8f0] rounded-[6px] text-slate-300 bg-slate-100 cursor-not-allowed opacity-60">
+            <%= heroicon "chevron-left", options: { class: "size-5" } %>
+          </div>
+        <% end %>
+
+        <!-- Page Numbers: Windowed to show at most 3 numbers to prevent overflow and clutter -->
+        <%
+          start_page = [@current_page - 1, 1].max
+          end_page = [start_page + 2, @total_pages].min
+          if end_page - start_page < 2
+            start_page = [end_page - 2, 1].max
+          end
+        %>
+        <% (start_page..end_page).each do |num| %>
+          <% is_active = num == @current_page %>
+          <% if is_active %>
+            <div class="flex items-center justify-center w-10 h-10 border border-[#074277] rounded-[6px] text-[#f8fafc] bg-[#074277] font-bold font-['Outfit']"><%= num %></div>
+          <% else %>
+            <a href="/products?page=<%= num %>&per_page=<%= @per_page %><%= "&category=#{u(params[:category])}" if params[:category].present? %><%= "&q=#{u(params[:q])}" if params[:q].present? %>" class="flex items-center justify-center w-10 h-10 border border-[#e2e8f0] rounded-[6px] text-[#0f172a] bg-white font-semibold font-['Outfit'] transition-all duration-300 hover:bg-[#074277]/[0.08] hover:text-[#074277] hover:border-[#074277]"><%= num %></a>
+          <% end %>
+        <% end %>
+
+        <!-- Next Page Link -->
+        <% if @current_page < @total_pages %>
+          <a href="/products?page=<%= @current_page + 1 %>&per_page=<%= @per_page %><%= "&category=#{u(params[:category])}" if params[:category].present? %><%= "&q=#{u(params[:q])}" if params[:q].present? %>" class="flex items-center justify-center w-10 h-10 border border-[#e2e8f0] rounded-[6px] text-[#0f172a] bg-white transition-all duration-300 hover:bg-[#074277]/[0.08] hover:text-[#074277] hover:border-[#074277]">
+            <%= heroicon "chevron-right", options: { class: "size-5" } %>
+          </a>
+        <% else %>
+          <div class="flex items-center justify-center w-10 h-10 border border-[#e2e8f0] rounded-[6px] text-slate-300 bg-slate-100 cursor-not-allowed opacity-60">
+            <%= heroicon "chevron-right", options: { class: "size-5" } %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%= render FooterComponent.new %>
+
+

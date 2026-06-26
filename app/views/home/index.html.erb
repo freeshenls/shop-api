@@ -1,0 +1,276 @@
+<% provide(:title, "SYPHOR | High-Quality & Affordable Small Home Appliances") %>
+<% provide(:description, "SYPHOR specializing in high-quality small household appliances, providing global one-stop premium supply chain services.") %>
+<% content_for :head do %>
+  <meta name="keywords" content="wholesale small appliance, small appliance suppliers, SYPHOR, SYPHOR appliances">
+<% end %>
+
+  <%# ── 统一 Header 组件（透明起步，滚动变品牌蓝）──%>
+  <%= render HeaderComponent.new(hero_page: true) %>
+
+  <!-- 👑 2. 核心首屏龙骨：DTC 级大屏多媒体画廊 -->
+  <section id="hero-section" class="relative w-full h-[92vh] md:h-screen bg-black overflow-hidden flex items-center justify-center transition-all duration-300">
+    
+    <div class="absolute inset-0 w-full h-full z-0">
+      <% if @banners.present? %>
+        <% @banners.each_with_index do |banner, index| %>
+          <div class="absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out <%= index == 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' %>" data-banner-slide="<%= index %>">
+            
+            <!-- 🖼️ 核心封面图大盘：两端纯图平铺 -->
+            <div data-poster-img-group class="absolute inset-0 w-full h-full z-10">
+              <!-- 📱 移动端：100% 只放竖屏高清图 image_mobile -->
+              <% if banner.image_mobile.attached? %>
+                <img src="<%= url_for(banner.image_mobile) %>" class="w-full h-full object-cover max-md:!block absolute inset-0" style="display: none;" alt="SYPHOR Presentation" data-poster-mobile>
+              <% end %>
+
+              <!-- 🖼️ 电脑端：默认展示横屏高清大图 image_pc -->
+              <% if banner.image_pc.attached? %>
+                <img src="<%= url_for(banner.image_pc) %>" class="hidden md:block w-full h-full object-cover absolute inset-0" alt="SYPHOR Presentation" data-poster-pc>
+              <% end %>
+            </div>
+
+            <!-- 🎬 电脑端专享视频轨：在服务端识别 User-Agent，非移动端设备才进行渲染，避免移动端加载视频 -->
+            <% if banner.video.attached? && !mobile_device? %>
+              <video class="hidden md:block w-full h-full object-cover absolute inset-0 z-20" style="display: none;" preload="metadata" loop muted playsinline aria-hidden="true" data-custom-video>
+                <source src="<%= rails_storage_proxy_path(banner.video) %>" type="<%= banner.video.content_type %>">
+              </video>
+              
+              <!-- 🎯 电脑端专享：高奢毛玻璃点播播放按钮 -->
+              <div class="hidden md:flex absolute inset-0 items-center justify-center z-30 pointer-events-none">
+                <button class="w-14 h-14 flex items-center justify-center bg-white/20 hover:bg-white/30 text-white border border-white/30 rounded-full backdrop-blur-sm cursor-pointer transition-all duration-500 ease-out transform hover:scale-125 active:scale-95 pointer-events-auto shadow-xl group" data-video-control-btn>
+                  <svg class="w-6 h-6 ml-0.5 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24" data-play-icon>
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  <svg class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24" data-pause-icon>
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                  </svg>
+                </button>
+              </div>
+            <% end %>
+            
+            <!-- 🌑 物理高级渐变遮罩 -->
+            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/40 z-25 pointer-events-none"></div>
+
+            <%
+              container_classes = case banner.text_position
+                                  when 'right'
+                                    'justify-end items-center text-right md:pr-32'
+                                  when 'top'
+                                    'justify-center items-start text-center pt-28 md:pt-40'
+                                  when 'bottom'
+                                    'justify-center items-end text-center pb-20 md:pb-32'
+                                  else # 'left'
+                                    'justify-start items-center text-left md:pl-32'
+                                  end
+            %>
+
+            <!-- 🎯 动态方位文案包裹盒 -->
+            <div class="absolute inset-0 z-30 flex w-full h-full p-8 max-w-7xl mx-auto select-none pointer-events-none <%= container_classes %>">
+              <div class="max-w-2xl">
+                <!-- 主标题 -->
+                <h1 class="text-4xl md:text-7xl font-black text-white tracking-widest uppercase mb-4 drop-shadow-xl leading-tight">
+                  <%= banner.title.present? ? banner.title : "SYPHOR" %>
+                </h1>
+
+                <!-- 副标题 -->
+                <p class="text-sm md:text-xl text-neutral-100 tracking-wide font-light drop-shadow-md mb-10 leading-relaxed max-w-xl <%= 'mx-auto' if ['top', 'bottom'].include?(banner.text_position) %>">
+                  <%= banner.subtitle.present? ? banner.subtitle : "Deliver one-stop services of high-quality small home appliances." %>
+                </p>
+
+                <!-- 圆角 DTC 跳转按钮 -->
+                <% if banner.redirect_link.present? %>
+                  <div class="relative z-40 pointer-events-auto">
+                    <a href="<%= banner.redirect_link %>"
+                       class="inline-flex items-center gap-2 px-7 py-2.5 bg-[#1F4E72] hover:bg-[#163A55] text-white text-sm font-semibold tracking-widest uppercase rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-[#1F4E72]/40 hover:-translate-y-0.5 no-underline group">
+                      Read More
+                      <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                    </a>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+          </div>
+        <% end %>
+
+        <!-- 底部小圆点指示器 -->
+        <div class="absolute bottom-8 left-0 right-0 z-40 flex justify-center items-center gap-3 pointer-events-auto">
+          <% @banners.each_with_index do |_, index| %>
+            <button class="w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer <%= index == 0 ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/70' %>" 
+                    data-banner-dot="<%= index %>"></button>
+          <% end %>
+        </div>
+
+      <% else %>
+        <div class="w-full h-full bg-neutral-50"></div>
+      <% end %>
+    </div>
+  </section>
+
+  <!-- 🛍️ 3. 品类一类瓷砖区 -->
+  <% if @categories.present? %>
+    <main id="explore-products" class="bg-white py-16 md:py-28 scroll-mt-20">
+      <div class="container mx-auto px-4 md:px-8">
+        <div class="text-center mb-16 md:mb-24">
+          <h2 class="<%= heading_home_section %> text-2xl md:text-4xl">Explore Categories</h2>
+          <div class="<%= divider_bar %> mx-auto mt-4"></div>
+          <p class="text-sm text-neutral-400 mt-3 tracking-wider font-light uppercase">Innovative technology for your modern home operations.</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+          <% @categories.each do |category| %>
+            <a href="/categories/<%= category.respond_to?(:slug) ? category.slug : category.id %>" class="group block relative overflow-hidden bg-neutral-50 aspect-square rounded-[6px] border border-neutral-100 shadow-sm hover:shadow-md transition-all duration-300">
+              <% if category.respond_to?(:image) && category.image.attached? %>
+                <img src="<%= url_for(category.image) %>" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" alt="<%= category.name %>">
+              <% end %>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100"></div>
+              <div class="absolute bottom-5 left-5 right-5 text-white z-10">
+                <h3 class="font-bold text-base md:text-lg tracking-wide uppercase transition-colors duration-300 group-hover:text-neutral-100"><%= category.name %></h3>
+                <span class="text-[10px] text-neutral-300 tracking-widest uppercase mt-1 block transform translate-y-1 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">Discover Now <span class="text-white">&rarr;</span></span>
+              </div>
+            </a>
+          <% end %>
+        </div>
+      </div>
+    </main>
+  <% end %>
+
+  <!-- ℹ️ 3.5. About Us Section -->
+  <section id="about" class="bg-neutral-50 py-16 md:py-24 border-t border-neutral-100 scroll-mt-20">
+    <div class="container mx-auto px-4 md:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <!-- Left Title and accent block -->
+        <div class="lg:col-span-4 flex flex-col items-start">
+          <h2 class="<%= heading_home_section %> text-3xl md:text-5xl leading-none">
+            About Us
+          </h2>
+          <div class="<%= divider_bar %> mt-4"></div>
+          <span class="text-xs text-neutral-400 font-['Outfit'] font-medium uppercase tracking-widest mt-3">
+            Since 2000 | SYPHOR Brand
+          </span>
+        </div>
+        
+        <!-- Right Content paragraphs -->
+        <div class="lg:col-span-8 flex flex-col gap-6 text-neutral-600 font-sans text-sm md:text-base leading-relaxed">
+          <p class="font-normal text-neutral-700">
+            Founded in 2000, <strong class="text-neutral-950 font-semibold">SYPHOR</strong> is a brand under Yiwu Aseimt Electrical Appliances Co., Ltd. We are a comprehensive brand enterprise specializing in small household appliances, with full business coverage of independent R&D, supply chain management and brand operation.
+          </p>
+          <p class="font-light">
+            Supported by reliable product quality, customer-centric service and sustainable business operation, we maintain long-term cooperation with all partners on the basis of mutual trust. Our mission is to deliver one-stop services of high-quality and affordable small home appliances to more customers worldwide.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 👑 4. Footer — 黑底白字品牌页脚 -->
+  <%= render FooterComponent.new %>
+
+  <!-- 🚀 前端多终端无缝切换调度引擎 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // 核心轮播滑块调度器
+      const slides = document.querySelectorAll('[data-banner-slide]');
+      const dots = document.querySelectorAll('[data-banner-dot]');
+      if (slides.length <= 1) return;
+
+      let currentSlide = 0;
+      let timer = null;
+
+      function goToSlide(nextSlide) {
+        // 💥 仅在存在并运行的桌面端视频中，执行暂停和切轨重置保护
+        const currentVideo = slides[currentSlide].querySelector('[data-custom-video]');
+        const currentImgGroup = slides[currentSlide].querySelector('[data-poster-img-group]');
+        const currentBtn = slides[currentSlide].querySelector('[data-video-control-btn]');
+        
+        if (currentVideo && !currentVideo.paused) {
+          currentVideo.pause();
+          currentVideo.style.display = 'none';
+          if (currentImgGroup) currentImgGroup.style.display = 'block';
+          if (currentBtn) {
+            currentBtn.classList.remove('opacity-0');
+          }
+        }
+
+        slides[currentSlide].classList.remove('opacity-100', 'z-10');
+        slides[currentSlide].classList.add('opacity-0', 'z-0');
+        dots[currentSlide].classList.remove('bg-white', 'scale-125');
+        dots[currentSlide].classList.add('bg-white/40');
+
+        currentSlide = nextSlide;
+
+        slides[currentSlide].classList.remove('opacity-0', 'z-0');
+        slides[currentSlide].classList.add('opacity-100', 'z-10');
+        dots[currentSlide].classList.remove('bg-white/40');
+        dots[currentSlide].classList.add('bg-white', 'scale-125');
+      }
+
+      function startTimer() {
+        timer = setInterval(() => {
+          goToSlide((currentSlide + 1) % slides.length);
+        }, 7000); // 7秒沉稳大厂级过渡
+      }
+
+      function resetTimer() {
+        clearInterval(timer);
+        startTimer();
+      }
+
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          if (index === currentSlide) return;
+          goToSlide(index);
+          resetTimer();
+        });
+      });
+
+      // 🎬 桌面端专享：视频手点点播与轮播熔断保护
+      slides.forEach((slide) => {
+        const video = slide.querySelector('[data-custom-video]');
+        const imgGroup = slide.querySelector('[data-poster-img-group]');
+        const btn = slide.querySelector('[data-video-control-btn]');
+        
+        if (video && btn) {
+          const playIcon = btn.querySelector('[data-play-icon]');
+          const pauseIcon = btn.querySelector('[data-pause-icon]');
+
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (video.paused) {
+              const showVideo = () => {
+                video.style.display = 'block';
+                if (imgGroup) imgGroup.style.display = 'none';
+              };
+              
+              if (video.readyState >= 3) {
+                showVideo();
+              } else {
+                const onPlaying = () => {
+                  showVideo();
+                  video.removeEventListener('playing', onPlaying);
+                };
+                video.addEventListener('playing', onPlaying);
+              }
+              
+              video.play();
+              playIcon.classList.add('hidden');
+              pauseIcon.classList.remove('hidden');
+              btn.classList.add('opacity-0', 'hover:opacity-100');
+              clearInterval(timer); // 看视频时挂起自动换轨
+            } else {
+              video.pause();
+              video.style.display = 'none';
+              if (imgGroup) imgGroup.style.display = 'block';
+              playIcon.classList.remove('hidden');
+              pauseIcon.classList.add('hidden');
+              btn.classList.remove('opacity-0', 'hover:opacity-100');
+              resetTimer();
+            }
+          });
+        }
+      });
+
+
+      startTimer();
+    });
+  </script>

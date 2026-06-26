@@ -1,0 +1,32 @@
+@scope (.ivu-layout) {
+  /* Trix Content styles to override Tailwind resets */
+  .trix-content ul {
+    list-style-type: disc !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    padding-left: 1.25rem !important;
+  }
+
+  .trix-content ol {
+    list-style-type: decimal !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    padding-left: 1.25rem !important;
+  }
+
+  .trix-content li {
+    display: list-item !important;
+    margin-bottom: 0.35rem !important;
+    list-style: inherit !important;
+  }
+
+  .trix-content strong,
+  .trix-content b {
+    font-weight: 700 !important;
+  }
+
+  .trix-content .attachment__caption {
+    display: none !important;
+  }
+}
+

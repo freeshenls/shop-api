@@ -3,16 +3,16 @@ Rails.application.routes.draw do
   authenticate :user do
     mount Motor::Admin => '/motor_admin'
   end
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  # 👑 黄金拦截铁闸：如果发现来源页是从 motor_admin 退出来的，根路由直接截胡重新定向回去！
+  constraints lambda { |req| req.referer&.include?('/motor_admin') || req.fullpath.include?('motor_admin') } do
+    root to: redirect('/motor_admin'), as: :motor_admin_logout_forced_redirect
+  end
+
+  root "home#index"
+  get "/products" => "products#index"
+  get "/products/:slug" => "products#show", as: :product
+  post "/inquiries" => "inquiries#create", as: :inquiries
+
   get "up" => "rails/health#show", as: :rails_health_check
-
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  # Defines the root path route ("/")
-  # root "posts#index"
 end

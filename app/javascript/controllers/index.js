@@ -4,5 +4,20 @@
 
 import { application } from "./application"
 
-import HelloController from "./hello_controller"
-application.register("hello", HelloController)
+import CategoryTreeController from "./category_tree_controller"
+application.register("category-tree", CategoryTreeController)
+
+import DatepickerController from "./datepicker_controller"
+application.register("datepicker", DatepickerController)
+
+import GalleryController from "./gallery_controller"
+application.register("gallery", GalleryController)
+
+import HeaderController from "./header_controller"
+application.register("header", HeaderController)
+
+import InquiryController from "./inquiry_controller"
+application.register("inquiry", InquiryController)
+
+import ProductCardController from "./product_card_controller"
+application.register("product-card", ProductCardController)

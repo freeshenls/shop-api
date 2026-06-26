@@ -1,0 +1,199 @@
+<%
+  # Set up category fallbacks in case the database is in an empty state
+  categories = @categories.any? ? @categories : ["Kitchen Appliances", "Home Appliances", "Beauty & Personal Care"]
+
+  # Resolve product info from native database model
+  title = @product.title
+  category = @product.category&.name
+  price = @product.price
+  old_price = nil
+  badge = nil
+  min_qty = 1
+  
+  phone_number = "+86 17369698809"
+  email_address = "info@gosyphor.com"
+
+  # Setup prices is no longer loaded from local HTML files
+  setup_prices = []
+  product_shipping_html = ""
+%>
+
+<%
+  cat_down = category.to_s.downcase
+
+  # Generate a dynamic SKU matching the style of "#XXX" based on the SKU code
+  clean_sku = @product.sku.to_s.gsub(/^CPN-/, '')
+  style_number = "##{clean_sku}"
+
+  # Parse base price for tiered wholesale calculations
+  base_price_str = price.to_s.strip
+  currency_sym = base_price_str[/[^\d.]+/] || "$"
+
+  # Resolve product images directly
+  gallery_images = []
+  build_image_formats = ->(attachment) {
+    begin
+      return nil unless attachment.present? && attachment.blob.present?
+      original_path = Rails.application.routes.url_helpers.rails_blob_path(attachment, only_path: true)
+      if attachment.variable?
+        thumb_path = Rails.application.routes.url_helpers.rails_representation_path(
+          attachment.representation(resize_to_limit: [120, 120]), only_path: true
+        )
+        main_path = Rails.application.routes.url_helpers.rails_representation_path(
+          attachment.representation(resize_to_limit: [800, 800]), only_path: true
+        )
+      else
+        thumb_path = original_path
+        main_path = original_path
+      end
+      {
+        original: original_path,
+        main: main_path,
+        thumb: thumb_path
+      }
+    rescue => e
+      nil
+    end
+  }
+
+  if @product.image.attached?
+    img_data = build_image_formats.call(@product.image)
+    gallery_images << img_data if img_data
+  end
+
+  if @product.images.attached?
+    @product.images.each do |img|
+      img_data = build_image_formats.call(img)
+      gallery_images << img_data if img_data
+    end
+  end
+
+  gallery_images = gallery_images.uniq { |img| img[:original] }
+  images_list = gallery_images.map { |img| img[:original] }
+  main_image_src = images_list.first || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Crect width='600' height='600' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='18' fill='%2394a3b8'%3ENo Image%3C/text%3E%3C/svg%3E"
+
+  # Dynamic price grid using real DB price
+  price_grid = [
+    { "Quantity" => { "From" => 1 }, "Price" => price.to_f, "IsQUR" => false }
+  ]
+
+  # Dynamic SEO Meta Tags
+  content_for :title, "#{@product.title} | #{style_number} | Syphor"
+  content_for :description, @product.description.to_s.truncate(155)
+
+  # Social Media Open Graph (OG) & Twitter Card Social SEO Headers
+  content_for :head do
+    raw(%(
+      <meta property="og:title" content="#{@product.title} | #{style_number} | Syphor">
+      <meta property="og:description" content="#{@product.description.to_s.truncate(155)}">
+      <meta property="og:type" content="product">
+      <meta property="og:url" content="#{request.original_url}">
+      <meta property="og:image" content="#{main_image_src}">
+      <meta property="og:site_name" content="Syphor">
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:title" content="#{@product.title} | #{style_number} | Syphor">
+      <meta name="twitter:description" content="#{@product.description.to_s.truncate(155)}">
+      <meta name="twitter:image" content="#{main_image_src}">
+      <link rel="stylesheet" href="/assets/main-80d74c436259f27b98fb.css" data-turbo-track="reload">
+    ))
+  end
+
+%>
+
+<%= render HeaderComponent.new(query: params[:q]) %>
+
+<div data-controller="inquiry">
+<section class="py-5 pb-[80px] md:pb-5">
+  <div class="<%= container_custom %>">
+    
+    <!-- Breadcrumbs full-width at the very top -->
+    <div class="hidden md:flex flex-wrap items-center gap-2 text-sm text-[#64748b] font-medium mb-6">
+      <a href="/" class="hover:text-[#074277] no-underline">Home</a>
+      <span>/</span>
+      <% if @product.category.present? %>
+        <%
+          # 优化④：直接遍历 includes 预加载好的 parent 关联，无额外 SQL
+          cat_path = []
+          current_cat = @product.category
+          visited_ids = []
+          while current_cat.present? && !visited_ids.include?(current_cat.id)
+            visited_ids << current_cat.id
+            cat_path.unshift(current_cat)
+            current_cat = current_cat.parent  # 已由 includes 加载，不触发新查询
+          end
+        %>
+        <% cat_path.each do |cat| %>
+          <a href="/products?category=<%= CGI.escape(cat.name) %>" class="hover:text-[#074277] no-underline"><%= cat.name %></a>
+          <span>/</span>
+        <% end %>
+      <% end %>
+      <span class="text-[#0f172a] font-semibold"><%= @product.sku %></span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-[30px] lg:gap-10 items-start">
+      
+      <div class="flex flex-col gap-[30px] px-[15px]">
+        <%= render ProductGalleryComponent.new(images_list: gallery_images, title: title) %>
+      </div>
+
+      <div class="flex flex-col gap-4 px-[15px]">
+        <h2 class="<%= heading_title %> text-2xl lg:text-3xl m-0"><%= title %></h2>
+
+        <% if @product.specifications.present? %>
+          <div class="ivu-layout [&_.text-cell]:max-h-none [&_.text-cell]:overflow-visible [&_.richtext-cell]:max-h-none [&_.richtext-cell]:overflow-visible [&_table]:overflow-visible [&_div]:overflow-visible">
+            <div class="richtext trix-content text-[14.5px] leading-relaxed text-[#0f172a]">
+              <%= raw @product.specifications %>
+            </div>
+          </div>
+        <% end %>
+
+        <button type="button" data-action="click->inquiry#openModal" class="<%= btn_action_accent %> h-9 px-4 rounded-[6px] text-xs hidden md:inline-flex self-start mt-2 shadow-sm no-underline">
+          Request a Quote
+        </button>
+      </div>
+
+    </div>
+
+    <% if @product.description.present? %>
+      <div class="mt-12 pt-10 ivu-layout">
+        <div class="richtext trix-content text-[14.5px] leading-relaxed text-[#0f172a]">
+          <%= raw @product.description %>
+        </div>
+      </div>
+    <% end %>
+    
+    <% if product_shipping_html.present? %>
+      <div class="mt-12 pt-10">
+        <h3 class="<%= heading_sub %> text-lg mb-4 pb-2">Production & Shipping</h3>
+        <div class="text-sm leading-relaxed text-[#0f172a] trix-content">
+          <%= raw product_shipping_html %>
+        </div>
+      </div>
+    <% end %>
+
+    <%= render InquiryModalComponent.new(product: @product) %>
+
+    <% if @related_products.any? %>
+      <div class="hidden md:block mt-12 pt-10 border-t border-[#e2e8f0]">
+        <h3 class="<%= heading_sub %> text-lg mb-6">Related Products</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-[280px] mx-auto sm:max-w-[780px] sm:mx-0">
+          <% @related_products[0..2].each do |related| %>
+            <%= render ProductCardComponent.new(product: related) %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<%= render FooterComponent.new %>
+
+
+
+<!-- Mobile Fixed Bottom Bar -->
+<div class="fixed bottom-0 left-0 right-0 h-[60px] bg-white border-t border-[#e2e8f0] px-4 py-2 flex items-center justify-center z-[999] md:hidden shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+  <button type="button" data-action="click->inquiry#openModal" class="<%= btn_action_accent %> w-full h-11 text-[15px] rounded-full">
+    Request a Quote
+  </button>
+</div>
+</div>

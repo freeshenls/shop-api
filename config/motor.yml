@@ -1,7 +1,77 @@
 ---
 engine_version: 0.5.0
-file_version: 2026-06-17 11:07:36.604127000 Z
+file_version: 2026-06-26 11:34:52.362535000 Z
 resources:
+- name: active_storage/attachment
+  preferences: {}
+  updated_at: 2026-06-18 02:58:55.033703000 +00:00
+- name: banner
+  preferences:
+    display_name: 首页轮播
+    columns:
+    - display_name: 视频
+      reference:
+        name: video_attachment
+        display_name: Video attachment
+        model_name: active_storage/attachment
+        reference_type: has_one
+        foreign_key: record_id
+        primary_key: id
+        options: {}
+        polymorphic:
+        virtual: false
+      name: video_attachment
+    - display_name: 排序
+      name: position
+    - display_name: 标题
+      name: title
+    - display_name: 子标题
+      name: subtitle
+    - display_name: 跳转链接
+      name: redirect_link
+    - display_name: 文本位置
+      column_type: tag
+      format:
+        select_options:
+        - left
+        - right
+        - top
+        - bottom
+      name: text_position
+    - display_name: 更新时间
+      name: updated_at
+    - display_name: 创建时间
+      name: created_at
+    - reference:
+        name: image_pc_attachment
+        display_name: Image pc attachment
+        model_name: active_storage/attachment
+        reference_type: has_one
+        foreign_key: record_id
+        primary_key: id
+        options: {}
+        polymorphic:
+        virtual: false
+      display_name: 图片_PC端
+      name: image_pc_attachment
+    - reference:
+        name: image_mobile_attachment
+        display_name: Image mobile attachment
+        model_name: active_storage/attachment
+        reference_type: has_one
+        foreign_key: record_id
+        primary_key: id
+        options: {}
+        polymorphic:
+        virtual: false
+      display_name: 图片_移动端
+      name: image_mobile_attachment
+    tabs:
+    - visible: false
+      name: audits
+    - visible: false
+      name: notes
+  updated_at: 2026-06-18 03:33:00.555009000 +00:00
 - name: category
   preferences:
     display_name: 类别列表
@@ -40,6 +110,10 @@ resources:
     - name
     - slug
   updated_at: 2026-06-17 10:38:45.313157000 +00:00
+- name: inquiry
+  preferences:
+    display_name: 询盘请求
+  updated_at: 2026-06-22 02:23:42.299467000 +00:00
 - name: product
   preferences:
     columns:
@@ -78,6 +152,11 @@ resources:
         polymorphic:
         virtual: false
       name: category_id
+    - display_name: 规格
+      column_type: richtext
+      name: specifications
+    - access_type: hidden
+      name: slug
     associations:
     - display_name: 多图
       name: images_attachments
@@ -93,11 +172,9 @@ resources:
     scopes:
     - display_name: Kitchen Appliances
       name: kitchen_appliances
-    - display_name: Home Appliances
-      name: home_appliances
     - display_name: Beauty & Personal Care
       name: beauty_personal_care
-  updated_at: 2026-06-17 10:52:25.495085000 +00:00
+  updated_at: 2026-06-26 11:34:52.362535000 +00:00
 - name: user
   preferences:
     display_name: 用户
@@ -106,23 +183,36 @@ resources:
 configs:
 - key: header.links
   value:
-  - name: 报告
+  - name: Reports
     link_type: reports
-  - name: 表单
+  - name: Forms
     link_type: forms
-  updated_at: 2026-06-17 09:35:55.372068000 +00:00
+  updated_at: 2026-06-22 03:32:32.511529000 +00:00
 - key: resources.category.scopes.order
   value:
   - level_1
   - level_2
   - level_3
   updated_at: 2026-06-17 09:57:07.977053000 +00:00
+- key: resources.product.columns.order
+  value:
+  - id
+  - category_id
+  - image_attachment
+  - title
+  - sku
+  - specifications
+  - slug
+  - price
+  - description
+  - updated_at
+  - created_at
+  updated_at: 2026-06-22 02:24:12.538675000 +00:00
 - key: resources.product.scopes.order
   value:
   - kitchen_appliances
-  - home_appliances
   - beauty_personal_care
-  updated_at: 2026-06-17 10:52:25.508919000 +00:00
+  updated_at: 2026-06-26 02:59:04.752448000 +00:00
 queries: []
 dashboards: []
 forms: []
@@ -133,4 +223,4 @@ api_configs:
   url: "/"
   preferences: {}
   description:
-  updated_at: 2026-06-17 09:23:33.264842000 +00:00
+  updated_at: 2026-06-18 07:05:50.016152000 +00:00

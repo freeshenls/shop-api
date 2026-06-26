@@ -7,7 +7,7 @@ module Motor
       return unless user
 
       # 1. 所有人（包含运营员）都能对业务数据进行增删改查
-      can :manage, [Category, Product]
+      can :manage, [ActiveStorage::Attachment, Category, Product, Banner]
 
       if user.admin?
         # 2. 管理员拥有所有权限（可以修改 dashboards, queries, forms, alerts, configs 等）

@@ -1,0 +1,84 @@
+<footer id="contact" class="bg-black text-neutral-300 font-sans select-none scroll-mt-20 border-t border-neutral-900">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
+      
+      <!-- Logo + 简介 -->
+      <div class="md:col-span-4 space-y-5">
+        <a href="/" class="inline-block opacity-90 hover:opacity-100 transition-opacity duration-200">
+          <img src="<%= image_path('logo_syphor_white.png') %>" alt="Syphor Logo" class="h-8 w-auto object-contain">
+        </a>
+        <p class="text-xs md:text-sm font-light leading-relaxed text-neutral-400 pr-0 md:pr-6">
+          SYPHOR's story originated in 2000 which is the premium global brand under Yiwu Aseimt Electrical Appliances Co., Ltd. We have more than 20 years of expertise and deep supply chain operational integration regarding household and electric home appliances.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="md:col-span-3 space-y-5">
+        <h3 class="text-xs font-semibold tracking-widest text-neutral-300 uppercase">Quick Links</h3>
+        <ul class="flex flex-col gap-3 text-xs md:text-sm font-medium text-neutral-400">
+          <li><a href="/"        class="!cursor-pointer hover:text-neutral-200 transition-colors duration-200 uppercase tracking-wider no-underline">Home</a></li>
+          <li><a href="#contact" class="!cursor-pointer hover:text-neutral-200 transition-colors duration-200 uppercase tracking-wider no-underline">About Us</a></li>
+          <li><a href="/products" class="!cursor-pointer hover:text-neutral-200 transition-colors duration-200 uppercase tracking-wider no-underline">Product Catalog</a></li>
+          <li><a href="#contact" class="!cursor-pointer hover:text-neutral-200 transition-colors duration-200 uppercase tracking-wider no-underline">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Us -->
+      <div class="md:col-span-5 space-y-5">
+        <h3 class="text-xs font-semibold tracking-widest text-neutral-300 uppercase">Contact Us</h3>
+        <ul class="flex flex-col gap-4 text-xs md:text-sm text-neutral-350">
+          <li class="flex items-start gap-2.5">
+            <%= heroicon "phone", options: { class: "size-4 text-neutral-400 mt-0.5 shrink-0" } %>
+            <div>
+              <span class="block text-neutral-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">Phone</span>
+              <a href="tel:+8617369698809" class="!cursor-pointer hover:text-neutral-100 transition-colors duration-200 text-neutral-200 font-medium no-underline">+86 17369698809</a>
+            </div>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <%= heroicon "envelope", options: { class: "size-4 text-neutral-400 mt-0.5 shrink-0" } %>
+            <div>
+              <span class="block text-neutral-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">Email</span>
+              <a href="mailto:info@gosyphor.com" class="!cursor-pointer hover:text-neutral-100 transition-colors duration-200 text-neutral-200 font-medium no-underline">info@gosyphor.com</a>
+            </div>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <%= heroicon "chat-bubble-left-right", options: { class: "size-4 text-neutral-400 mt-0.5 shrink-0" } %>
+            <div>
+              <span class="block text-neutral-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">WeChat / WhatsApp</span>
+              <span class="text-neutral-200 font-medium">+86 17369698809</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <%= heroicon "map-pin", options: { class: "size-4 text-neutral-400 mt-0.5 shrink-0" } %>
+            <div>
+              <span class="block text-neutral-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">Address 1</span>
+              <span class="leading-relaxed text-neutral-300">F3-17174, 2th Street, 3rd Floor, Gate 29, 2nd District, Futian Market, Yiwu, China</span>
+            </div>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <%= heroicon "map-pin", options: { class: "size-4 text-neutral-400 mt-0.5 shrink-0" } %>
+            <div>
+              <span class="block text-neutral-500 text-[10px] uppercase font-bold tracking-wider mb-0.5">Address 2</span>
+              <span class="leading-relaxed text-neutral-300">Room 1407 Liandu Tower A, Futian Street, Yiwu Jinhua, Zhejiang, China.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 底部版权栏 -->
+  <div class="border-t border-neutral-900 py-5 bg-black">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      <div class="text-neutral-450 font-light tracking-wide text-center sm:text-left">
+        Copyright &copy; 2026 Yiwu Aseimt Electric Appliance Co., LTD.
+      </div>
+      <div class="flex items-center gap-5 text-neutral-400">
+        <a href="https://www.facebook.com/profile.php?id=100086707598985" target="_blank" class="!cursor-pointer text-neutral-400 hover:text-white transition-colors duration-200" aria-label="Facebook">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 512 512"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

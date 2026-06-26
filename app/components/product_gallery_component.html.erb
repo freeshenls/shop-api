@@ -1,0 +1,56 @@
+<div class="w-full relative flex flex-col gap-4" id="product-gallery" data-controller="gallery" data-title="<%= @title %>" data-action="touchstart->gallery#touchStart touchmove->gallery#touchMove touchend->gallery#touchEnd keydown@window->gallery#handleKeydown">
+  <div class="w-full relative aspect-square md:aspect-[4/3] max-h-[320px] md:max-h-[360px] bg-transparent rounded-xl flex items-center justify-center overflow-hidden group">
+    <% if @images_list.any? %>
+      <img src="<%= @images_list.first[:main] %>" alt="<%= @title %>" class="max-h-full max-w-full object-contain cursor-pointer transition-all duration-300" id="mainImage" data-gallery-target="mainImage" data-action="click->gallery#openLightbox" data-original-url="<%= @images_list.first[:original] %>">
+    <% else %>
+      <div class="w-full h-full flex items-center justify-center text-[#9ca3af] font-medium">No Image</div>
+    <% end %>
+  </div>
+
+  <% if @images_list.size > 1 %>
+    <!-- Unified Thumbnails Strip with Non-Overlapping Left/Right Buttons -->
+    <div class="w-full flex items-center gap-2">
+      <!-- Left Arrow Button -->
+      <button type="button" class="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[#666] rounded-full w-9 h-9 flex items-center justify-center cursor-pointer transition-all duration-200 focus:outline-none shrink-0" data-action="click->gallery#prevImage" aria-label="Previous image">
+        <%= heroicon "chevron-left", options: { class: "size-5 stroke-[2.5] text-[#666]" } %>
+      </button>
+
+      <!-- Thumbnails Container -->
+      <div class="flex gap-2.5 overflow-x-auto scroll-smooth flex-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-1">
+        <% @images_list.each_with_index do |url, index| %>
+          <button type="button" data-action="click->gallery#selectImage" data-gallery-target="thumb" class="thumb-item <%= 'active' if index == 0 %> border border-slate-200 [&.active]:border-slate-900 rounded-md p-1 bg-white cursor-pointer w-12 h-12 flex items-center justify-center transition-all duration-200 shrink-0 hover:border-slate-400 focus:outline-none" data-index="<%= index %>" data-main-url="<%= url[:main] %>" data-original-url="<%= url[:original] %>">
+            <img src="<%= url[:thumb] %>" class="max-h-10 object-contain max-w-full rounded">
+          </button>
+        <% end %>
+      </div>
+
+      <!-- Right Arrow Button -->
+      <button type="button" class="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[#666] rounded-full w-9 h-9 flex items-center justify-center cursor-pointer transition-all duration-200 focus:outline-none shrink-0" data-action="click->gallery#nextImage" aria-label="Next image">
+        <%= heroicon "chevron-right", options: { class: "size-5 stroke-[2.5] text-[#666]" } %>
+      </button>
+    </div>
+  <% end %>
+
+  <!-- Fullscreen Lightbox Modal -->
+  <div data-gallery-target="lightboxModal" class="fixed inset-0 w-screen h-screen bg-white/98 backdrop-blur-md z-[10000] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 [&.open]:opacity-100 [&.open]:pointer-events-auto" data-action="click->gallery#closeLightboxOnOutsideClick touchstart->gallery#lightboxTouchStart touchmove->gallery#lightboxTouchMove touchend->gallery#lightboxTouchEnd">
+    <button type="button" class="absolute top-4 right-4 md:top-6 md:right-6 bg-slate-100 border border-slate-200 text-slate-800 rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center cursor-pointer transition-all duration-300 z-[10002] hover:bg-slate-200 hover:scale-105" data-action="click->gallery#closeLightbox" aria-label="Close Lightbox">
+      <%= heroicon "x-mark", options: { class: "!opacity-100 size-5" } %>
+    </button>
+    
+    <button type="button" class="absolute top-1/2 -translate-y-1/2 left-6 bg-slate-100 border border-slate-200 text-slate-800 rounded-full w-12 h-12 hidden md:flex items-center justify-center cursor-pointer transition-all duration-300 z-[10002] hover:bg-slate-200 hover:scale-105" data-action="click->gallery#prevLightbox" aria-label="Previous image">
+      <%= heroicon "chevron-left", options: { class: "!opacity-100 size-6" } %>
+    </button>
+    
+    <div class="max-w-[95%] max-h-[92%] flex items-center justify-center">
+      <img data-gallery-target="lightboxImage" class="max-w-[95vw] md:max-w-full max-h-[85vh] md:max-h-[90vh] object-contain rounded-[12px] shadow-md" src="" alt="Fullscreen view">
+    </div>
+    
+    <div data-gallery-target="lightboxCaption" class="hidden"></div>
+    <div data-gallery-target="lightboxCounter" class="hidden"></div>
+    
+    <button type="button" class="absolute top-1/2 -translate-y-1/2 right-6 bg-slate-100 border border-slate-200 text-slate-800 rounded-full w-12 h-12 hidden md:flex items-center justify-center cursor-pointer transition-all duration-300 z-[10002] hover:bg-slate-200 hover:scale-105" data-action="click->gallery#nextLightbox" aria-label="Next image">
+      <%= heroicon "chevron-right", options: { class: "!opacity-100 size-6" } %>
+    </button>
+  </div>
+</div>
+

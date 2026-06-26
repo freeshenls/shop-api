@@ -1,0 +1,180 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<div data-inquiry-target="modal" 
+     class="fixed inset-0 w-screen h-screen z-[10000] flex items-end md:items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 [&.open]:opacity-100 [&.open]:pointer-events-auto group">
+  
+  <div class="absolute inset-0 bg-black/50 transition-opacity" data-action="click->inquiry#closeModal"></div>
+  
+  <!-- Modal Content Container -->
+  <div class="w-full md:max-w-2xl bg-white shadow-2xl flex flex-col z-10 overflow-hidden max-h-[85vh] md:max-h-[90vh]
+              rounded-none translate-y-full transition-all duration-300 group-[.open]:translate-y-0
+              md:rounded-none md:-translate-y-16 md:opacity-0 md:group-[.open]:translate-y-0 md:group-[.open]:opacity-100">
+    
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
+      <h3 class="<%= heading_title %> text-xl m-0">Request a Quote</h3>
+      <button type="button" class="text-slate-400 hover:text-slate-600 cursor-pointer focus:outline-none p-1 rounded-full hover:bg-slate-100 transition-colors" data-action="click->inquiry#closeModal" aria-label="Close modal">
+        <%= heroicon "x-mark", options: { class: "size-5" } %>
+      </button>
+    </div>
+
+    <!-- Scrollable Form Container -->
+    <div class="overflow-y-auto px-6 py-4 flex-1">
+      <div class="flex py-3 px-1 gap-3 items-center overflow-x-auto whitespace-nowrap">
+        <span class="group step-nav-item active flex items-center gap-2 text-[13px] font-semibold text-[#64748b] cursor-pointer [&.active]:text-[#074277] [&.completed]:text-[#074277]" data-step="1" data-inquiry-target="navItem" data-action="click->inquiry#goToStep">
+          <span class="w-[22px] h-[22px] rounded-full bg-[#cbd5e1] text-white flex items-center justify-center text-[11px] font-bold group-[.active]:bg-[#074277] group-[.completed]:bg-[#074277]">1</span>Contact
+        </span>
+        <span class="text-[#64748b] text-[13px]">&gt;</span>
+        <span class="group step-nav-item flex items-center gap-2 text-[13px] font-semibold text-[#64748b] cursor-pointer [&.active]:text-[#074277] [&.completed]:text-[#074277]" data-step="2" data-inquiry-target="navItem" data-action="click->inquiry#goToStep">
+          <span class="w-[22px] h-[22px] rounded-full bg-[#cbd5e1] text-white flex items-center justify-center text-[11px] font-bold group-[.active]:bg-[#074277] group-[.completed]:bg-[#074277]">2</span>Details & Artwork
+        </span>
+      </div>
+
+      <form id="quote-form-element" data-inquiry-target="form" data-action="submit->inquiry#submitForm" class="py-4 flex flex-col gap-4 box-border">
+        <input type="hidden" name="product_id" value="<%= @product.id %>">
+        
+        <div class="stepper-step hidden [&.active]:flex [&.active]:flex-col [&.active]:gap-4 active" data-step="1" data-inquiry-target="step">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-start">
+            <div class="w-full sm:w-[30%] sm:max-w-[30%] pr-0 sm:pr-2 pt-0 sm:pt-1.5 text-left sm:text-right mb-1 sm:mb-0 box-border">
+              <label class="<%= form_label %>">First name <span class="text-[#b93530]">*</span></label>
+            </div>
+            <div class="w-full sm:w-[70%] sm:max-w-[70%] box-border">
+              <input type="text" required class="<%= form_field_base %> h-8 <%= input_focus %>" name="first_name" data-inquiry-target="firstName">
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-start">
+            <div class="w-full sm:w-[30%] sm:max-w-[30%] pr-0 sm:pr-2 pt-0 sm:pt-1.5 text-left sm:text-right mb-1 sm:mb-0 box-border">
+              <label class="<%= form_label %>">Last name <span class="text-[#b93530]">*</span></label>
+            </div>
+            <div class="w-full sm:w-[70%] sm:max-w-[70%] box-border">
+              <input type="text" required class="<%= form_field_base %> h-8 <%= input_focus %>" name="last_name" data-inquiry-target="lastName">
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-start">
+            <div class="w-full sm:w-[30%] sm:max-w-[30%] pr-0 sm:pr-2 pt-0 sm:pt-1.5 text-left sm:text-right mb-1 sm:mb-0 box-border">
+              <label class="<%= form_label %>">Company name <span class="text-[#b93530]">*</span></label>
+            </div>
+            <div class="w-full sm:w-[70%] sm:max-w-[70%] box-border">
+              <input type="text" required class="<%= form_field_base %> h-8 <%= input_focus %>" name="company_name" data-inquiry-target="companyName">
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-start">
+            <div class="w-full sm:w-[30%] sm:max-w-[30%] pr-0 sm:pr-2 pt-0 sm:pt-1.5 text-left sm:text-right mb-1 sm:mb-0 box-border">
+              <label class="<%= form_label %>">Email <span class="text-[#b93530]">*</span></label>
+            </div>
+            <div class="w-full sm:w-[70%] sm:max-w-[70%] box-border">
+              <input type="email" required class="<%= form_field_base %> h-8 <%= input_focus %>" name="email" data-inquiry-target="email">
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-start">
+            <div class="w-full sm:w-[30%] sm:max-w-[30%] pr-0 sm:pr-2 pt-0 sm:pt-1.5 text-left sm:text-right mb-1 sm:mb-0 box-border">
+              <label class="<%= form_label %>">Phone number</label>
+            </div>
+            <div class="w-full sm:w-[70%] sm:max-w-[70%] flex gap-2 box-border">
+              <select class="w-full h-8 border border-[#e2e8f0] rounded-[6px] font-['Inter'] text-[13.5px] text-[#0f172a] outline-none bg-white transition-all duration-300 box-border <%= input_focus %> max-w-[110px] pl-2.5 pr-6 cursor-pointer" name="phone_country" data-inquiry-target="phoneCountry" data-action="change->inquiry#updatePhonePrefix">
+                <option value="United States">United States</option>
+                <option value="Canada">Canada</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Australia">Australia</option>
+              </select>
+              <div class="relative flex-grow flex box-border">
+                <input type="text" id="phone-prefix" value="+1" readonly data-inquiry-target="phonePrefix" class="w-[42px] text-center border border-r-0 border-[#e2e8f0] rounded-l-[6px] rounded-r-none text-[13px] bg-[#f8fafc] text-[#64748b] outline-none h-8 box-border font-['Inter']">
+                <input type="tel" class="<%= form_field_base %> h-8 <%= input_focus %> !rounded-l-none flex-grow !h-8" name="phone" placeholder="Phone number" data-inquiry-target="phoneInput">
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-start">
+            <div class="w-full sm:w-[30%] sm:max-w-[30%] pr-0 sm:pr-2 pt-0 sm:pt-1.5 text-left sm:text-right mb-1 sm:mb-0 box-border">
+              <label class="<%= form_label %>">Country/Region</label>
+            </div>
+            <div class="w-full sm:w-[70%] sm:max-w-[70%] box-border">
+              <input type="text" class="<%= form_field_base %> h-8 <%= input_focus %>" name="country" placeholder="Enter country/region...">
+            </div>
+          </div>
+
+          <div class="mt-4 flex justify-between items-center box-border">
+            <button type="button" class="h-[32px] px-3 bg-transparent text-[#64748b] border border-[#e2e8f0] rounded-[6px] font-['Outfit'] font-bold text-xs !cursor-pointer inline-flex items-center justify-center box-border hover:bg-[#f8fafc] hover:border-[#64748b]" data-action="click->inquiry#closeModal">
+              <span>Cancel</span>
+            </button>
+            <button type="button" class="<%= btn_action_accent %> h-[32px] px-4 rounded-[6px] text-xs gap-1 box-border" data-action="click->inquiry#nextStep">
+              <span>Next Step</span>
+              <%= heroicon "arrow-right", variant: :micro %>
+            </button>
+          </div>
+        </div>
+
+        <div class="stepper-step hidden [&.active]:flex [&.active]:flex-col [&.active]:gap-4" data-step="2" data-inquiry-target="step">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-start">
+            <div class="w-full sm:w-[30%] sm:max-w-[30%] pr-0 sm:pr-2 pt-0 sm:pt-1.5 text-left sm:text-right mb-1 sm:mb-0 box-border">
+              <label class="<%= form_label %>">Your Artwork</label>
+            </div>
+            <div class="w-full sm:w-[70%] sm:max-w-[70%] box-border">
+              <div class="flex flex-col gap-1 w-full box-border">
+                <input type="file" name="artwork" accept="image/*,.pdf,.ai,.eps,.cdr" class="py-1 px-2.5 border border-dashed border-[#e2e8f0] rounded-[6px] text-[13px] bg-[#f8fafc] w-full cursor-pointer box-border h-8">
+                <span class="text-[11px] text-[#64748b]">Supported: AI, CDR, EPS, PDF, PNG, JPG (Optional)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-start">
+            <div class="w-full sm:w-[30%] sm:max-w-[30%] pr-0 sm:pr-2 pt-0 sm:pt-1.5 text-left sm:text-right mb-1 sm:mb-0 box-border">
+              <label class="<%= form_label %>">Color</label>
+            </div>
+            <div class="w-full sm:w-[70%] sm:max-w-[70%] box-border">
+              <input type="text" class="<%= form_field_base %> h-8 <%= input_focus %>" name="color" placeholder="Preferred color(s)">
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-start">
+            <div class="w-full sm:w-[30%] sm:max-w-[30%] pr-0 sm:pr-2 pt-0 sm:pt-1.5 text-left sm:text-right mb-1 sm:mb-0 box-border">
+              <label class="<%= form_label %>">Quantity</label>
+            </div>
+            <div class="w-full sm:w-[70%] sm:max-w-[70%] box-border">
+              <input type="number" class="<%= form_field_base %> h-8 <%= input_focus %>" name="quantity" id="synced-qty-input" data-inquiry-target="quantityInput" min="1" data-action="input->inquiry#highlightPricingTier">
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-start">
+            <div class="w-full sm:w-[30%] sm:max-w-[30%] pr-0 sm:pr-2 pt-0 sm:pt-1.5 text-left sm:text-right mb-1 sm:mb-0 box-border">
+              <label class="<%= form_label %>">Need-by Date</label>
+            </div>
+            <div class="relative flex-grow w-full sm:w-[70%] sm:max-w-[70%] flex items-center box-border">
+              <input type="text" class="<%= form_field_base %> h-8 <%= input_focus %> bg-white w-full box-border !pr-9" name="date_required" data-controller="datepicker" placeholder="Select date..." readonly>
+              <%= heroicon "calendar", options: { class: "absolute right-2.5 text-[#64748b] pointer-events-none size-5" } %>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-start">
+            <div class="w-full sm:w-[30%] sm:max-w-[30%] pr-0 sm:pr-2 pt-0 sm:pt-1.5 text-left sm:text-right mb-1 sm:mb-0 box-border">
+              <label class="<%= form_label %>">Comments</label>
+            </div>
+            <div class="w-full sm:w-[70%] sm:max-w-[70%] box-border">
+              <textarea class="<%= form_field_base %> <%= input_focus %> h-auto py-1.5" rows="3" name="comments" placeholder="Any special requests or comments..."></textarea>
+            </div>
+          </div>
+
+          <div class="mt-4 flex justify-between items-center box-border">
+            <div class="flex gap-2">
+              <button type="button" class="h-[32px] px-3 bg-transparent text-[#64748b] border border-[#e2e8f0] rounded-[6px] font-['Outfit'] font-bold text-xs !cursor-pointer inline-flex items-center justify-center box-border hover:bg-[#f8fafc] hover:border-[#64748b]" data-action="click->inquiry#closeModal">
+                <span>Cancel</span>
+              </button>
+              <button type="button" class="h-[32px] px-3 bg-transparent text-[#64748b] border border-[#e2e8f0] rounded-[6px] font-['Outfit'] font-bold text-xs !cursor-pointer inline-flex items-center justify-center gap-1 box-border hover:bg-[#f8fafc] hover:border-[#64748b]" data-action="click->inquiry#prevStep">
+                <%= heroicon "arrow-left", variant: :micro %>
+                <span>Back</span>
+              </button>
+            </div>
+            <button type="submit" class="<%= btn_action_accent %> h-[32px] px-4 rounded-[6px] text-xs gap-1 box-border" data-inquiry-target="submitBtn">
+              <span>OK</span>
+              <%= heroicon "check", variant: :micro %>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -52,5 +52,6 @@ class Category < ApplicationRecord
     product_scope_order = Motor::Config.find_or_initialize_by(key: "resources.product.scopes.order")
     product_scope_order.value = new_scopes.map { |s| s["name"] }
     product_scope_order.save!
+
   end
 end

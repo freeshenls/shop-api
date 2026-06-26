@@ -2,17 +2,20 @@ test:
   service: Disk
   root: <%= Rails.root.join("tmp/storage") %>
 
-local:
-  service: Disk
-  root: <%= Rails.root.join("storage") %>
+# local:
+#   service: Disk
+#   root: <%= Rails.root.join("storage") %>
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
-# amazon:
-#   service: S3
-#   access_key_id: <%= Rails.application.credentials.dig(:aws, :access_key_id) %>
-#   secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
-#   region: us-east-1
-#   bucket: your_own_bucket-<%= Rails.env %>
+local:
+  service: S3
+  access_key_id: <%= ENV.fetch('R2_ACCESS_KEY_ID', 'f13a0c5bcddbea59f63586fff7f5fd83') %>
+  secret_access_key: <%= ENV.fetch('R2_SECRET_ACCESS_KEY', '93f571f3e2832d74066a4562141a448f9c992f11de4ba05535d8329006cbddec') %>
+  region: <%= ENV.fetch('R2_REGION', 'auto') %>
+  bucket: <%= ENV.fetch('R2_BUCKET', 'store-api') %>
+  endpoint: <%= ENV.fetch('R2_ENDPOINT', 'https://1bec4c062ef97641f5b81f72ee5b1939.r2.cloudflarestorage.com') %>
+  compute_checksums: false
+  force_path_style: true
 
 # Remember not to checkin your GCS keyfile to a repository
 # google:

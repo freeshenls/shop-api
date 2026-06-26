@@ -1,0 +1,253 @@
+<%# ========================================================
+    HeaderComponent
+    - 透明起步，滚动后变品牌蓝 (#243B51)
+    - 白色文字 / 白色 logo
+    - 桌面：Mega Menu 下拉 + 收缩搜索球
+    - 移动端：抽屉汉堡菜单 (Stimulus header controller)
+    ======================================================== %>
+<header id="main-header"
+        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#243B51]<%= ' md:bg-transparent' if @hero_page %>"
+        data-controller="header"
+        data-action="click@document->header#clickOutside">
+
+  <% if @hero_page %>
+    <script>
+      (function() {
+        if (window.scrollY > 20 && window.innerWidth >= 768) {
+          var header = document.getElementById('main-header');
+          if (header) {
+            header.style.backgroundColor = '#243B51';
+            header.classList.add('shadow-lg');
+          }
+        }
+      })();
+    </script>
+  <% end %>
+
+  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-11 md:h-16">
+
+      <%# ── Logo ── %>
+      <div class="flex-shrink-0">
+        <a href="/" class="flex items-center no-underline select-none">
+          <img src="<%= image_path('logo_syphor_white.png') %>"
+               alt="Syphor Logo"
+               class="h-6 md:h-9 w-auto object-contain">
+        </a>
+      </div>
+
+      <%# ── 桌面导航 + 搜索 ── %>
+      <div class="hidden md:flex items-center space-x-8">
+
+        <nav class="flex items-center space-x-10">
+
+          <a href="/" class="<%= nav_link %>">Home</a>
+
+          <%# Products Mega Menu %>
+          <div class="group relative">
+            <a href="/products" class="<%= nav_link %> flex items-center gap-1.5 cursor-pointer py-5 focus:outline-none">
+              Products
+              <%= heroicon "chevron-down", variant: :mini, options: { class: "h-4 w-4 transition-transform duration-200 group-hover:rotate-180" } %>
+            </a>
+
+            <%# Mega Menu Dropdown %>
+            <div class="absolute top-full left-1/2 -translate-x-1/2 w-screen max-w-screen-2xl bg-white text-neutral-800 shadow-2xl border-t-2 border-[#243B51] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 pointer-events-auto z-50">
+              <div class="max-w-7xl mx-0 px-8 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 text-left font-sans">
+                <% all_level_2 = @mobile_cat_tree.flat_map { |l1| l1.children } %>
+                
+                <% if all_level_2.size <= 5 %>
+                  <% all_level_2.each do |level_2| %>
+                    <div class="flex flex-col gap-2">
+                      <h3 class="<%= mega_menu_heading %>"><%= level_2.name %></h3>
+                      <% level_2.children.sort_by(&:name).first(8).each do |level_3| %>
+                        <a href="/products?category=<%= ERB::Util.u(level_3.name) %>" class="<%= mega_menu_link %>"><%= level_3.name %></a>
+                      <% end %>
+                      <% if level_2.children.size > 8 %>
+                        <a href="/products?category=<%= ERB::Util.u(level_2.name) %>" class="<%= mega_menu_link %> font-bold text-[#243B51] hover:underline">View All &rarr;</a>
+                      <% end %>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <%# Render first 4 columns %>
+                  <% all_level_2.first(4).each do |level_2| %>
+                    <div class="flex flex-col gap-2">
+                      <h3 class="<%= mega_menu_heading %>"><%= level_2.name %></h3>
+                      <% level_2.children.sort_by(&:name).first(8).each do |level_3| %>
+                        <a href="/products?category=<%= ERB::Util.u(level_3.name) %>" class="<%= mega_menu_link %>"><%= level_3.name %></a>
+                      <% end %>
+                      <% if level_2.children.size > 8 %>
+                        <a href="/products?category=<%= ERB::Util.u(level_2.name) %>" class="<%= mega_menu_link %> font-bold text-[#243B51] hover:underline">View All &rarr;</a>
+                      <% end %>
+                    </div>
+                  <% end %>
+                  
+                  <%# Render 5th column: Other More %>
+                  <div class="flex flex-col gap-2">
+                    <h3 class="<%= mega_menu_heading %>">Other More</h3>
+                    <% all_level_2[4..].sort_by(&:name).each do |level_2| %>
+                      <a href="/products?category=<%= ERB::Util.u(level_2.name) %>" class="<%= mega_menu_link %>"><%= level_2.name %></a>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <a href="/#about"  class="<%= nav_link %>">About Us</a>
+          <a href="#contact" class="<%= nav_link %>">Contact Us</a>
+        </nav>
+
+        <%# 收缩搜索球 %>
+        <form action="/products" method="GET" class="relative flex items-center">
+          <input type="text" name="q" value="<%= @query %>"
+                 placeholder="Search..."
+                 class="w-10 focus:w-44 h-9 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full pl-9 pr-0 focus:pl-9 focus:pr-4 text-xs text-white placeholder-transparent focus:placeholder-white/60 outline-none transition-all duration-300 focus:bg-white focus:text-neutral-800 cursor-pointer focus:cursor-text focus:border-white peer">
+          <div class="absolute left-3 flex items-center pointer-events-none text-white peer-focus:text-neutral-500 transition-colors duration-300">
+            <%= heroicon "magnifying-glass", options: { class: "h-4 w-4" } %>
+          </div>
+        </form>
+
+      </div>
+
+      <%# ── 移动端汉堡按钮 ── %>
+      <div class="flex items-center md:hidden">
+        <button id="main-mobile-menu-btn"
+                class="text-white hover:text-white/70 transition-colors duration-200 focus:outline-none cursor-pointer"
+                data-action="click->header#toggleMobileMenu">
+          <%= heroicon "bars-3",  options: { class: "h-6 w-6", style: "display:block;",  "data-header-target" => "menuIconOpen" } %>
+          <%= heroicon "x-mark",  options: { class: "h-6 w-6", style: "display:none;",   "data-header-target" => "menuIconClose" } %>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <%# ── 移动端抽屉菜单 ── %>
+  <div id="main-mobile-menu"
+       class="mobile-accordion-menu !block max-h-0 overflow-hidden transition-[max-height] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] w-full bg-[#1B2E3F] [&.open]:max-h-[calc(100vh-44px)] [&.open]:overflow-y-auto"
+       data-header-target="mobileMenu">
+    <div class="px-5 py-5 space-y-1">
+
+      <%# 搜索栏 %>
+      <form class="relative w-full mb-2" action="/products" method="GET">
+        <%= heroicon "magnifying-glass", options: { class: "absolute left-4 top-1/2 -translate-y-1/2 text-white/50 size-5 pointer-events-none" } %>
+        <input type="text" name="q" value="<%= @query %>"
+               placeholder="Search products..."
+               class="w-full h-11 bg-white/10 border border-white/15 rounded-xl pl-12 pr-4 font-sans text-sm text-white placeholder-white/40 outline-none transition-all focus:border-white/50 focus:bg-white/15">
+      </form>
+
+      <a href="/" class="<%= mobile_nav_link('border-b border-white/10') %>">Home</a>
+
+      <%# 移动端品类折叠 %>
+      <% is_any_category_active = params[:category].present? %>
+      <div class="border-b border-white/10 flex flex-col">
+        <button type="button"
+                class="w-full flex justify-between items-center text-sm font-black text-white hover:text-white/70 uppercase tracking-widest py-3 bg-transparent border-none cursor-pointer text-left outline-none"
+                data-action="click->header#toggleMobileCategories">
+          <span>Products</span>
+          <%= heroicon "chevron-down", variant: :mini, options: { class: "h-4 w-4 transition-transform duration-200 pointer-events-none #{is_any_category_active ? 'rotate-180' : ''}", "data-header-target" => "mobileCategoriesIcon" } %>
+        </button>
+        <div data-header-target="mobileCategoriesList"
+             style="<%= is_any_category_active ? 'display:flex;' : 'display:none;' %>"
+             class="flex-col gap-2 pt-1 pb-4 pl-2 font-sans">
+          
+          <% active_cat = params[:category].present? ? Category.find_by(name: params[:category]) : nil %>
+          
+          <ul class="list-none p-0 m-0 flex flex-col gap-1.5 w-full">
+            <% @mobile_cat_tree.each_with_index do |level_1, idx| %>
+              <% is_l1_active = params[:category].to_s.downcase == level_1.name.downcase %>
+              <% has_l1_children = level_1.children.any? %>
+              <% l1_expanded = active_path?(level_1, active_cat) %>
+
+              <li <% if has_l1_children %>data-controller="category-tree"<% end %> class="w-full">
+                <%# ── Level 1 Row (button on left) ── %>
+                <div class="flex items-center gap-1 w-full">
+                  <% if has_l1_children %>
+                    <button type="button"
+                            data-action="click->category-tree#toggle"
+                            class="flex-shrink-0 flex items-center justify-center w-6 h-8 rounded text-white/55 hover:text-white bg-transparent border-none cursor-pointer outline-none transition-colors duration-150">
+                      <%= heroicon "chevron-right", variant: :mini,
+                          options: { class: "transition-transform duration-250 #{ l1_expanded ? 'rotate-90' : '' }",
+                                     "data-category-tree-target" => "chevron" } %>
+                    </button>
+                  <% else %>
+                    <div class="w-6 flex-shrink-0"></div>
+                  <% end %>
+
+                  <a href="/products?category=<%= ERB::Util.u(level_1.name) %>"
+                     class="flex-1 py-2 px-2.5 text-[13.5px] font-bold rounded-[6px] no-underline transition-all duration-200 <%= is_l1_active ? 'bg-white/15 text-white' : 'text-white/80 hover:text-white hover:bg-white/5' %>">
+                    <%= level_1.name %>
+                  </a>
+                </div>
+
+                <%# ── Level 2 Submenu (animated) ── %>
+                <% if has_l1_children %>
+                  <ul data-category-tree-target="submenu"
+                      class="list-none p-0 m-0 pl-6 flex flex-col gap-1.5 py-1 mt-1
+                             transition-[max-height] duration-300 ease-in-out
+                             <%= l1_expanded ? '' : 'cat-collapsed' %>">
+
+                    <% level_1.children.each do |level_2| %>
+                      <% is_l2_active = params[:category].to_s.downcase == level_2.name.downcase %>
+                      <% has_l2_children = level_2.children.any? %>
+                      <% is_l2_path = active_path?(level_2, active_cat) %>
+
+                      <li <% if has_l2_children %>data-controller="category-tree"<% end %> class="w-full">
+                        <%# ── Level 2 Row (button on left) ── %>
+                        <div class="flex items-center gap-1 w-full">
+                          <% if has_l2_children %>
+                            <button type="button"
+                                    data-action="click->category-tree#toggle"
+                                    class="flex-shrink-0 flex items-center justify-center w-5 h-7 rounded text-white/40 hover:text-white bg-transparent border-none cursor-pointer outline-none transition-colors duration-150">
+                              <%= heroicon "chevron-right", variant: :mini,
+                                  options: { class: "transition-transform duration-250 #{ is_l2_path ? 'rotate-90' : '' }",
+                                             "data-category-tree-target" => "chevron" } %>
+                            </button>
+                          <% else %>
+                            <div class="w-5 flex-shrink-0"></div>
+                          <% end %>
+
+                          <a href="/products?category=<%= ERB::Util.u(level_2.name) %>"
+                             class="flex-1 py-1.5 px-2 text-[12.5px] font-semibold rounded-[5px] no-underline transition-all duration-200 <%= (is_l2_active || is_l2_path) ? 'bg-white/10 text-white font-bold' : 'text-white/60 hover:text-white hover:bg-white/5' %>">
+                            <%= level_2.name %>
+                          </a>
+                        </div>
+
+                        <%# ── Level 3 Submenu (animated) ── %>
+                        <% if has_l2_children %>
+                          <ul data-category-tree-target="submenu"
+                              class="list-none p-0 m-0 pl-5 flex flex-col gap-1 py-1 mt-1
+                                     transition-[max-height] duration-300 ease-in-out
+                                     <%= is_l2_path ? '' : 'cat-collapsed' %>">
+
+                            <% level_2.children.each do |level_3| %>
+                              <% is_l3_active = params[:category].to_s.downcase == level_3.name.downcase %>
+                              <li>
+                                <a href="/products?category=<%= ERB::Util.u(level_3.name) %>"
+                                   class="block py-1.5 px-3 text-[12px] font-medium rounded-[4px] no-underline transition-all duration-150 <%= is_l3_active ? 'text-white font-bold bg-white/5' : 'text-white/45 hover:text-white' %>">
+                                  <%= level_3.name %>
+                                </a>
+                              </li>
+                            <% end %>
+                          </ul>
+                        <% end %>
+                      </li>
+                    <% end %>
+                  </ul>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+
+      <a href="/#about"  class="<%= mobile_nav_link %>">About Us</a>
+      <a href="#contact" class="<%= mobile_nav_link %>">Contact Us</a>
+    </div>
+  </div>
+
+</header>
+<%# Spacer — 只在非首页使用（首页 hero 全屏覆盖不需要撑开） %>
+<% unless @hero_page %>
+  <div class="h-11 md:h-16"></div>
+<% end %>
